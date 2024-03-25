@@ -15,11 +15,15 @@ crucible_in1 = cylinder(d1=d-20-2*s,d2=d-2*s,h=h).translate([0,0,s])
 
 crucible = crucible_out - crucible_in
 
-net=(crucible_out| crucible_out.up(1)) - crucible_in1
-net |= cylinder(d=10,h=t+10).down(10)
-net &= cube([100,2,100]).translate([0,-1,-10])
-net -= cube([20,5,20]).translate([-5,0,-11]).rotz(180/w).right(0.25)
-net -= cube([20,5,20]).translate([-5,-5,-11]).rotz(-180/w).right(0.25)
+
+net=crucible_out - crucible_in1
+net |= cylinder(d=12,h=t+10).down(10) # Mittelsteg
+net &= cube([100,2,100]).translate([0,-1,-10]) #nur ein slice
+net -= cube([20,5,20]).translate([-5,0,-11]).rotz(180/w).right(0.25) # zuspitzen
+net -= cube([20,5,20]).translate([-5,-5,-11]).rotz(-180/w).right(0.25) #zuspitzen
+
+arc=(cylinder(r=s+3,h=2,center=True)-cylinder(r=3,h=3,center=True)) & cube([10,10,2]).down(1)
+net |= arc.rotate([0,-90,90]).translate([3+d/2-0.25,0,h])
 
 
 
@@ -34,7 +38,7 @@ compile2 = net.rotx(180).up(h+1)
 for i in range(w):
     compile2 |= net.rotx(180).up(h+1).rotz(360*i/w)
 
-output(compile1 | compile2)
-#output(net)
+#output(compile1 | compile2)
+output(net)
 
 #output(crucible-cube(100))
